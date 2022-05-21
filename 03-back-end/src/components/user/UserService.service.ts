@@ -1,28 +1,42 @@
 import UserModel from './UserModel.model';
-class UserService {
-    public async getAll(): Promise<UserModel[]> {
-        const users: UserModel[] = [];
+import BaseService from '../../common/BaseService';
+import IAdapterOptions from '../../common/IAdapterOptions.interface';
+import PeriodService from '../period/PeriodService.service';
 
-        return users;
+interface IUserAdapterOptions extends IAdapterOptions {
+    loadPeriods: boolean;
+}
+
+const DefaultUserAdapterOptions: IUserAdapterOptions = {
+    loadPeriods: true
+}
+class UserService extends BaseService<UserModel, IUserAdapterOptions> {
+    
+    tableName(): string {
+        return "user";
     }
 
-    public async getById(userId: number): Promise<UserModel|null> {
-        
-        if(userId === 5){
-            return null;
-        }
+    protected async adaptToModel(data: any, options: IUserAdapterOptions = DefaultUserAdapterOptions): Promise<UserModel> {
+        const user: UserModel = new UserModel();
 
-        return {
-            userId: 1,
-            email: "aleksa@gmail.com",
-            passwordHash: "aleksa",
-            firstName: "Aleksa",
-            lastName: "Vidakovic",
-            phoneNumber: "123456",
-            createdAt: new Date(),
-            isActive: true
-        };
+        user.userId = +data?.user_id;
+        user.email = data?.email;
+        user.passwordHash = data?.password_hash;
+        user.firstName = data?.first_name;
+        user.lastName = data?.last_name;
+        user.phoneNumber = data?.phone_number;
+        user.createdAt = data?.created_at;
+        user.isActive = data?.is_active;
+
+        /*if (options.loadPeriods) {
+            const periodService: PeriodService = new PeriodService(this.db);
+
+            user.periods = await periodService.
+        }*/
+
+        return user;
     }
+    
 }
 
 export default UserService;

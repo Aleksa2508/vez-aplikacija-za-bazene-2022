@@ -21,8 +21,10 @@
     "typescript": "^4.6.4"
   },
   "dependencies": {
+    "ajv": "^8.11.0",
     "cors": "^2.8.5",
     "express": "^4.18.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "mysql2": "^2.3.3"
   }
 }

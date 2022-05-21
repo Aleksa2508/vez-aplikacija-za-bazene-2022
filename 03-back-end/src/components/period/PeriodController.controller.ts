@@ -1,7 +1,7 @@
 import {Request, Response} from "express";
 import PeriodService from './PeriodService.service';
 
-class PeriodController {
+export default class PeriodController {
     private periodService: PeriodService;
 
     constructor(periodService: PeriodService){
@@ -9,19 +9,29 @@ class PeriodController {
     }
 
     async getAll(req: Request, res: Response) {
-        res.send(await this.periodService.getAll());
+        this.periodService.getAll({})
+            .then(result => {
+                res.send(result)
+            })
+            .catch(error => {
+                res.status(500).send(error?.message);
+            });
     }
 
     async getById(req: Request, res: Response) {
         const id: number = +req.params?.id;
 
-        const period = await this.periodService.getById(id);
-
-        if (period === null) {
-            return res.send(404);
-        }
-
-        res.send(period);
+        this.periodService.getById(id, {})
+            .then(result => {
+                if(result === null){
+                    return res.sendStatus(404);
+                }
+                
+                res.send(result);
+            })
+            .catch(error => {
+                res.status(500).send(error?.message);
+            });
     }
 
 }
