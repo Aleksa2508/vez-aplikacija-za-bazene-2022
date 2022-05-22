@@ -14,7 +14,7 @@ export default abstract class BaseService<ReturnModel extends IModel, AdapterOpt
     }
 
     abstract tableName(): string;
-    protected abstract adaptToModel(data: any, options: IAdapterOptions): Promise<ReturnModel>;
+    protected abstract adaptToModel(data: any, options: AdapterOptions): Promise<ReturnModel>;
     
     public getAll(options: AdapterOptions): Promise<ReturnModel[]> {
         
@@ -66,6 +66,34 @@ export default abstract class BaseService<ReturnModel extends IModel, AdapterOpt
                     reject(error);
                 });
         });
+    }
+
+    protected async getAllByFieldNameAnValue(fieldName: string, value: any, options: AdapterOptions): Promise<ReturnModel[]> {
+        const tableName = this.tableName();
+
+        return new Promise<ReturnModel[]>(
+            (resolve, reject) => {
+                const sql: string = `SELECT * FROM \`${ tableName }\` WHERE \`${ fieldName }\` = ?;`;
+
+                this.db.execute(sql, [ value ])
+                    .then( async ( [ rows ] ) => {
+                        if (rows === undefined) {
+                            return resolve([]);
+                        }
+
+                        const objects: ReturnModel[] = [];
+
+                        for (const row of rows as mysql2.RowDataPacket[]) {
+                            objects.push(await this.adaptToModel(row, options));
+                        }
+
+                        resolve(objects);
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
+            }
+        );
     }
 
 }

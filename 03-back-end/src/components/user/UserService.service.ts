@@ -36,6 +36,10 @@ class UserService extends BaseService<UserModel, IUserAdapterOptions> {
 
         return user;
     }
+
+    public async getByEmail(email: string, options: IUserAdapterOptions = DefaultUserAdapterOptions): Promise<UserModel[]> {
+        return this.getAllByFieldNameAnValue('email', email, options);
+    }
     
 }
 

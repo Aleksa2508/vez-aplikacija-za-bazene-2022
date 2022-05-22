@@ -37,6 +37,24 @@ class UserController {
                 res.status(500).send(error?.message);
             });
     }
+
+    public async getByEmail(req: Request, res: Response) {
+        const email: string = req.params?.email;
+
+        this.userService.getByEmail(email, {
+            loadPeriods: true
+        })
+            .then(result => {
+                if (result === null) {
+                    return res.sendStatus(404);
+                }
+
+                res.send(result[0]);
+            })
+            .catch(error => {
+                res.status(500).send(error?.message);
+            });
+    }
 }
 
 export default UserController;
