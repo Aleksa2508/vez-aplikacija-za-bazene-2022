@@ -7,10 +7,15 @@ class UserModel implements IModel {
     firstName: string;
     lastName: string;
     phoneNumber: string;
-    createdAt: Date;
+    createdAt: string;
     isActive: boolean;
 
-    periods?: PeriodModel[];
+    periods?: IUserPeriod[];
+}
+
+export interface IUserPeriod {
+    period: PeriodModel;
+    isCanceled: boolean;
 }
 
 export default UserModel;

@@ -6,6 +6,9 @@ import * as fs from "fs";
 import * as morgan from "morgan";
 import IApplicationResources from "./common/IApplicationResources.interface";
 import * as mysql2 from 'mysql2/promise';
+import AdministratorService from './components/administrator/AdministratorService.service';
+import PeriodService from './components/period/PeriodService.service';
+import UserService from './components/user/UserService.service';
 
 async function main() {
     const config: IConfig = DevConfig;
@@ -15,17 +18,28 @@ async function main() {
         recursive: true,
     });
 
+    const db =  await mysql2.createConnection({
+        host: config.database.host,
+        port: config.database.port,
+        user: config.database.user,
+        password: config.database.password,
+        database: config.database.database,
+        charset: config.database.charset,
+        timezone: config.database.timezone,
+    });
+
     const applicationResources: IApplicationResources = {
-        datebaseConnection: await mysql2.createConnection({
-            host: config.database.host,
-            port: config.database.port,
-            user: config.database.user,
-            password: config.database.password,
-            database: config.database.database,
-            charset: config.database.charset,
-            timezone: config.database.timezone,
-        })
+        datebaseConnection: db,
+        services: {
+            administrator: null,
+            period: null,
+            user: null
+        }
     }
+
+    applicationResources.services.administrator = new AdministratorService(applicationResources);
+    applicationResources.services.period = new PeriodService(applicationResources);
+    applicationResources.services.user = new UserService(applicationResources);
 
     const app: express.Application = express();
     app.use(cors());

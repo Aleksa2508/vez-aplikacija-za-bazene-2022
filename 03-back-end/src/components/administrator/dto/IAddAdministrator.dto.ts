@@ -1,32 +1,35 @@
 import Ajv from 'ajv';
-
+import IServiceData from "../../../common/IServiceData.interface";
 
 const ajv = new Ajv();
 
-export default interface IAddAdministrator {
+export default interface IAddAdministrator extends IServiceData {
     username: string;
-    passwordHash: string;
-} 
+    password_hash: string;
+}
+
+export interface IAddAdministratorDto {
+    username: string;
+    password: string;
+}
 
 const AddAdministratorSchema = {
     type: "object",
     properties: {
         username: {
             type: "string",
-            minLength: 5,
-            maxLength: 32
+            pattern: "^[a-z\-]{5,64}$",
         },
-        passwordHash: {
+        password: {
             type: "string",
-            minLength: 8,
-            maxLength: 128
+            pattern: "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$",
         }
     },
     required: [
         "username",
-        "passwordHash"
+        "password",
     ],
-    additionalProperties: false
+    additionalProperties: false,
 }
 
 const AddAdministratorValitator = ajv.compile(AddAdministratorSchema);
