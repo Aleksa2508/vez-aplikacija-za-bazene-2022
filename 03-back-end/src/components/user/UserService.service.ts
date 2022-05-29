@@ -96,5 +96,6 @@ class UserService extends BaseService<UserModel, IUserAdapterOptions> {
         });
 
     }
+    
 }
 export default UserService;

@@ -17,10 +17,11 @@ const EditPeriodSchema = {
         period: {
             type: "string",
             //pattern: "",
-        }
+        },
+        
     },
     required: [
-        "period",
+       "period"
     ],
     additionalProperties: false,
 }

@@ -95,11 +95,11 @@ class PeriodService extends BaseService<PeriodModel, IPeriodAdapterOptions> {
         });
     }
 
-    async editPeriodUser(data: IPeriodUser): Promise<true> {
+    async cancelPeriodUser(data: IPeriodUser): Promise<true> {
         return new Promise((resolve, reject) => {
-            const sql: string = "UPDATE period_user SET is_canceled = ? WHERE period_id = ? AND user_id = ?;";
+            const sql: string = "UPDATE period_user SET is_canceled = 1 WHERE period_id = ? AND user_id = ?;";
 
-            this.db.execute(sql, [ data.is_canceled, data.period_id, data.user_id])
+            this.db.execute(sql, [ /*data.is_canceled,*/ data.period_id, data.user_id])
                 .then(result => {
                     const info: any = result;
 

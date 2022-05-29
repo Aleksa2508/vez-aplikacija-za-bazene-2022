@@ -11,6 +11,8 @@ export default class PeriodRouter {
         app.get("/api/period/:id", periodController.getById.bind(periodController));
         app.post("/api/period", periodController.add.bind(periodController));
         app.put("/api/period/:pid", periodController.edit.bind(periodController));
+        app.post("/api/period/:pid", periodController.addUserToAPeriod.bind(periodController));
+        app.put("/api/period/:pid/cancel", periodController.cancelPeriodUser.bind(periodController));
         
     }
 } 

@@ -64,19 +64,44 @@ export default class PeriodController extends BaseController {
                 }
 
                 this.services.period.editById(id, data, DefaultPeriodAdapterOptions)
-                    .then(result => {
+                    .then (async result => {
                         res.send(result);
                     })
                     .catch(error => {
                         res.status(400).send(error?.message);
                     });
-
-                    // Dodati funckcionalnost za dodavanje novog korisnika u termin
+                                   
             })
-            .catch(error => {
-                res.status(500).send(error?.message);
-            });
+           
+        }
 
-    }
+        addUserToAPeriod(req: Request, res: Response) {
+            const id: number = +req.params?.pid;
+            const data = req.body;
 
+            this.services.period.addPeriodUser({period_id: id, user_id: data.userId})
+                .then(result => {
+                    console.log(result);
+                    res.send(result.toString())
+                })
+                .catch(error => {
+                    res.status(400).send("User " + data.userId + " is already in this period.");
+                });
+        }
+
+        cancelPeriodUser(req: Request, res: Response) {
+            const id: number = +req.params?.pid;
+            const data = req.body;
+
+            this.services.period.cancelPeriodUser({period_id: id, user_id: data.userId})
+                .then(result => {
+                    res.send(result.toString());
+                })
+                .catch(error => {
+                    res.status(error.status).send(error.message);
+                });
+        }
 }
+
+
+
