@@ -4,11 +4,11 @@ import IServiceData from "../../../common/IServiceData.interface";
 const ajv = new Ajv();
 
 export default interface IEditPeriod extends IServiceData {
-    period: string
+    period: Date
 }
 
 export interface IEditPeriodDto {
-    period: string
+    period: Date
 }
 
 const EditPeriodSchema = {
@@ -16,7 +16,7 @@ const EditPeriodSchema = {
     properties: {
         period: {
             type: "string",
-            //pattern: "",
+            pattern: "date-time",
         },
         
     },

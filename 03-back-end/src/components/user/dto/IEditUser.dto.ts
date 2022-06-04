@@ -9,6 +9,8 @@ export default interface IEditUser extends IServiceData {
     last_name?: string;
     phone_number?: string;
     is_active?: number;
+    activation_code?: string;
+    password_reset_code?: string;
 }
 
 export interface IEditUserDto {
@@ -24,16 +26,21 @@ const EditUserSchema = {
     properties: {
         password: {
             type: "string",
-            //pattern: "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$",
+            pattern: "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$",
         },
         firstName: {
-            type: "string"
+            type: "string",
+            minLength: 2,
+            maxLength: 64,
         },
         lastName: {
-            type: "string"
+            type: "string",
+            minLength: 2,
+            maxLength: 64,
         },
         phoneNumber: {
-            type: "string"
+            type: "string",
+            //pattern: "^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$"
         }
     },
     required: [],

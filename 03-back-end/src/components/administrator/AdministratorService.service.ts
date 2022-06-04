@@ -41,6 +41,24 @@ class AdministratorService extends BaseService<AdministratorModel, IAdministrato
     public async editById(id: number, data: IEditAdministrator): Promise<AdministratorModel> {
         return this.baseEditById(id, data, {removePassword: true});
     }
+
+    public async getByUsername(username: string): Promise<AdministratorModel|null> {
+        return new Promise((resolve, reject) => {
+            this.getAllByFieldNameAnValue("username", username, DefaultAdministratorAdapterOptions)
+                .then(result => {
+                    
+                    if(result.length === 0) {
+                        return resolve(null);
+                    }
+                    
+                    resolve(result[0]);
+                    
+                })
+                .catch(error => {
+                    reject(error);
+                })
+        });
+    }
 }
 
 export default AdministratorService;

@@ -1,7 +1,9 @@
 import Ajv from 'ajv';
 import IServiceData from "../../../common/IServiceData.interface";
+import addFormats from "ajv-formats";
 
 const ajv = new Ajv();
+addFormats(ajv);
 
 export default interface IAddUser extends IServiceData {
     email: string;
@@ -9,9 +11,10 @@ export default interface IAddUser extends IServiceData {
     first_name: string;
     last_name: string;
     phone_number: string;
+    activation_code: string;
 }
 
-export interface IAddUserDto {
+export interface IRegisterUserDto {
     email: string;
     password: string;
     firstName: string;
@@ -19,24 +22,30 @@ export interface IAddUserDto {
     phoneNumber: string;
 }
 
-const AddUserSchema = {
+const RegisterUserSchema = {
     type: "object",
     properties: {
         email: {
             type: "string",
+            format: "email",
         },
         password: {
             type: "string",
             pattern: "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,}$",
         },
         firstName: {
-            type: "string"
+            type: "string",
+            minLength: 2,
+            maxLength: 64,
         },
         lastName: {
-            type: "string"
+            type: "string",
+            minLength: 2,
+            maxLength: 64,
         },
         phoneNumber: {
-            type: "string"
+            type: "string",
+           // pattern: "^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$"
         }
     },
     required: [
@@ -44,11 +53,10 @@ const AddUserSchema = {
         "password",
         "firstName",
         "lastName",
-        "phoneNumber"
     ],
     additionalProperties: false,
 }
 
-const AddUserValitator = ajv.compile(AddUserSchema);
+const RegisterUserValitator = ajv.compile(RegisterUserSchema);
 
-export {AddUserValitator};
+export {RegisterUserValitator};

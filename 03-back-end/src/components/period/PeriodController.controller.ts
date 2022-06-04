@@ -8,7 +8,14 @@ import { EditPeriodValitator, IEditPeriodDto } from './dto/IEditPeriod.dto';
 export default class PeriodController extends BaseController {
    
     getAll(req: Request, res: Response) {
-        this.services.period.getAll({loadUsers: true})
+
+        let loadUsersForPeriod: boolean = true;
+
+        if(req.authorisation?.role === "user") {
+            loadUsersForPeriod = false;
+        }
+
+        this.services.period.getAll({loadUsers: loadUsersForPeriod})
             .then(result => {
                 res.send(result)
             })
@@ -20,7 +27,13 @@ export default class PeriodController extends BaseController {
     getById(req: Request, res: Response) {
         const id: number = +req.params?.id;
 
-        this.services.period.getById(id, {loadUsers: true})
+        let loadUsersForPeriod: boolean = true;
+
+        if(req.authorisation?.role === "user") {
+            loadUsersForPeriod = false;
+        }
+
+        this.services.period.getById(id, {loadUsers: loadUsersForPeriod})
             .then(result => {
                 if(result === null){
                     return res.sendStatus(404);

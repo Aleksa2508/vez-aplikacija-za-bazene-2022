@@ -1,20 +1,21 @@
 import UserModel from './UserModel.model';
 import BaseService from '../../common/BaseService';
 import IAdapterOptions from '../../common/IAdapterOptions.interface';
-import PeriodService from '../period/PeriodService.service';
-import IAddUser from './dto/IAddUser.dto';
 import IEditUser from './dto/IEditUser.dto';
 import { IPeriodUser } from '../period/PeriodModel.model';
 import { DefaultPeriodAdapterOptions } from '../period/PeriodService.service';
+import IAddUser from './dto/IRegisterUser.dto';
 
 interface IUserAdapterOptions extends IAdapterOptions {
     hidePassword: boolean;
     loadPeriods: boolean;
+    hideActivationCode: boolean;
 }
 
 export const DefaultUserAdapterOptions: IUserAdapterOptions = {
     hidePassword: false,
-    loadPeriods: false
+    loadPeriods: false,
+    hideActivationCode: false
 }
 class UserService extends BaseService<UserModel, IUserAdapterOptions> {
 
@@ -33,6 +34,8 @@ class UserService extends BaseService<UserModel, IUserAdapterOptions> {
         user.phoneNumber = data?.phone_number;
         user.createdAt = data?.created_at;
         user.isActive = data?.is_active === 1;
+        user.activationCode = data?.activation_code ? data?.activation_code : null;
+        user.passwordResetCode = data?.password_reset_code ? data?.password_reset_code : null;
 
         if (options.loadPeriods) {
             user.periods = await this.services.period.getAllByUserId(user.userId, DefaultPeriodAdapterOptions);
@@ -40,6 +43,10 @@ class UserService extends BaseService<UserModel, IUserAdapterOptions> {
 
         if (options.hidePassword) {
             user.passwordHash = null;
+        }
+
+        if(options.hideActivationCode) {
+            user.activationCode = null;
         }
 
         return user;
@@ -50,7 +57,61 @@ class UserService extends BaseService<UserModel, IUserAdapterOptions> {
     }
 
     async editById(id: number, data: IEditUser, options: IUserAdapterOptions = DefaultUserAdapterOptions): Promise<UserModel> {
-        return this.baseEditById(id, data, { hidePassword: true, loadPeriods: false });
+        return this.baseEditById(id, data, { hidePassword: true, loadPeriods: false, hideActivationCode: true});
+    }
+
+    async getUserByActivationCode(activationCode: string, options: IUserAdapterOptions = DefaultUserAdapterOptions): Promise<UserModel|null> {
+        return new Promise((resolve, reject) => {
+            this.getAllByFieldNameAnValue("activation_code", activationCode, options)
+                .then(result => {
+                    
+                    if(result.length === 0) {
+                        resolve(null);
+                    }
+
+                    resolve(result[0]);
+
+                })
+                .catch(error => {
+                    reject(error?.message);
+                });
+        });
+    }
+
+    async getUserByPasswordResetCode(passwordResetCode: string, options: IUserAdapterOptions = DefaultUserAdapterOptions): Promise<UserModel|null> {
+        return new Promise((resolve, reject) => {
+            this.getAllByFieldNameAnValue("password_reset_code", passwordResetCode, options)
+                .then(result => {
+                    
+                    if(result.length === 0) {
+                        resolve(null);
+                    }
+
+                    resolve(result[0]);
+
+                })
+                .catch(error => {
+                    reject(error?.message);
+                });
+        });
+    }
+
+    async getUserByEmail(email: string, options: IUserAdapterOptions = DefaultUserAdapterOptions): Promise<UserModel|null> {
+        return new Promise((resolve, reject) => {
+            this.getAllByFieldNameAnValue("email", email, options)
+                .then(result => {
+                    
+                    if(result.length === 0) {
+                        resolve(null);
+                    }
+
+                    resolve(result[0]);
+
+                })
+                .catch(error => {
+                    reject(error?.message);
+                });
+        });
     }
 
     async getAllByPeriodId(periodId: number, options: IUserAdapterOptions = DefaultUserAdapterOptions): Promise<IPeriodUser[]> {
@@ -80,7 +141,9 @@ class UserService extends BaseService<UserModel, IUserAdapterOptions> {
                                     lastName: user.lastName,
                                     phoneNumber: user.phoneNumber,
                                     createdAt: user.createdAt,
-                                    isActive: user.isActive
+                                    isActive: user.isActive,
+                                    activationCode: user.activationCode,
+                                    passwordResetCode: user.passwordResetCode
                                 },
 
                                 isCanceled: row.is_canceled === 1,

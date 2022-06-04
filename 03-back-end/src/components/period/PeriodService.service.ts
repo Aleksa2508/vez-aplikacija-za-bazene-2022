@@ -30,6 +30,7 @@ class PeriodService extends BaseService<PeriodModel, IPeriodAdapterOptions> {
         if(options.loadUsers){
             period.users = await this.services.user.getAllByPeriodId(period.periodId, DefaultUserAdapterOptions);
         }
+        
 
         return period;
     }

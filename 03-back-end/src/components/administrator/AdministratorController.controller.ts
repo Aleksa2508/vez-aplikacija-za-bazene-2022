@@ -36,8 +36,6 @@ class AdministratorController extends BaseController {
     add(req: Request, res: Response) {
         const data = req.body as IAddAdministratorDto;
 
-        // Validacija
-
         if(!AddAdministratorValitator(data)){
             return res.status(400).send(AddAdministratorValitator.errors);
         }

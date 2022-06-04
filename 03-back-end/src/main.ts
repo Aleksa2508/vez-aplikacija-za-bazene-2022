@@ -33,7 +33,7 @@ async function main() {
         services: {
             administrator: null,
             period: null,
-            user: null
+            user: null,
         }
     }
 

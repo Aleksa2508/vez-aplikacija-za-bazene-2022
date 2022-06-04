@@ -2,7 +2,7 @@ import IModel from '../../common/IModel.interface';
 import UserModel from '../user/UserModel.model';
 class PeriodModel implements IModel {
     periodId: number;
-    period: string;
+    period: Date;
 
     users?: IPeriodUser[];
 }
