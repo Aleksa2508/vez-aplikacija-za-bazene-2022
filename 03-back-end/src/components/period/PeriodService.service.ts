@@ -27,10 +27,16 @@ class PeriodService extends BaseService<PeriodModel, IPeriodAdapterOptions> {
         period.periodId = +data?.period_id;
         period.period = data?.period;
 
-        if(options.loadUsers){
+        /*if(options.loadUsers){
             period.users = await this.services.user.getAllByPeriodId(period.periodId, DefaultUserAdapterOptions);
+        }*/
+        period.users = await this.services.user.getAllByPeriodId(period.periodId, DefaultUserAdapterOptions);
+        period.emptySpots = 10 - period.users.length;
+
+        if(!options.loadUsers) {
+            period.users = null;
         }
-        
+
 
         return period;
     }
@@ -65,7 +71,8 @@ class PeriodService extends BaseService<PeriodModel, IPeriodAdapterOptions> {
                             return {
                                 period: {
                                     periodId: row.period_id,
-                                    period: period.period
+                                    period: period.period,
+                                    emptySpots: period.emptySpots
                                 },
 
                                 isCanceled: row.is_canceled === 1,

@@ -3,7 +3,7 @@ import UserModel from '../user/UserModel.model';
 class PeriodModel implements IModel {
     periodId: number;
     period: Date;
-
+    emptySpots: number;
     users?: IPeriodUser[];
 }
 
