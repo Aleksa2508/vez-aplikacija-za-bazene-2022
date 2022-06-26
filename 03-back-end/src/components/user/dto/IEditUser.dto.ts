@@ -41,6 +41,9 @@ const EditUserSchema = {
         phoneNumber: {
             type: "string",
             //pattern: "^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$"
+        },
+        isActive: {
+            type: "boolean",
         }
     },
     required: [],

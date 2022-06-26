@@ -15,6 +15,7 @@ import UserListPage from '../Administrator/UserListPage/UserListPage';
 import AdminEditContactPage from '../Administrator/AdminEditContactPage/AdminEditContactPage';
 import AdminEditRulesAndGuidesPage from '../Administrator/AdminEditRulesAndGuidesPage/AdminEditRulesAndGuidesPage';
 import Menu from '../Menu/Menu';
+import AdminPeriodPage from '../Administrator/AdminPeriodPage/AdminPeriodPage';
 
 function Application() {
   return (
@@ -40,6 +41,7 @@ function Application() {
             <Route path="/admin/users" element={ <UserListPage /> }></Route>
             <Route path="/admin/edit-contact" element={ <AdminEditContactPage /> }></Route>
             <Route path="/admin/edit-rules-and-guides" element={ <AdminEditRulesAndGuidesPage /> }></Route>
+            <Route path="/admin/period/:id" element={ <AdminPeriodPage /> }></Route>
           </Routes>
        </BrowserRouter>
     </Container>
