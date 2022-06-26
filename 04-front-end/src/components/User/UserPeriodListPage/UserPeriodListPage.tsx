@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import IPeriod from "../../../models/IPeriod.model";
+import { api } from '../../../api/api';
+
 
 export default function UserPeriodListPage() {
     
@@ -7,16 +9,19 @@ export default function UserPeriodListPage() {
     const [errorMessage, setErrorMessage] = useState<string>("");
     
     useEffect(() => {
-        fetch("http://localhost:10000/api/period/")
-        .then(res => res.json())
-        .then(data => {
-            setPeriods(data);
-        })
-        .catch(error => {
-            setErrorMessage(error?.message ?? "Unknown error occured while loading periods.")
-        });
-    }, [ ]);
 
+        api("get", "/api/period", "user")
+            .then(apiResponse => {
+                if(apiResponse.status === "ok"){
+                    return setPeriods(apiResponse.data);
+                }
+            })
+            .catch(error => {
+                setErrorMessage(error?.message ?? "Unknown error occured while loading periods.")
+            });
+
+   
+        }, []);       
     return (
         
         <div>

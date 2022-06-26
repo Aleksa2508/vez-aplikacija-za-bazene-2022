@@ -8,7 +8,7 @@ export default function Menu() {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div className="navbar-nav">
-                        <Link className="nav-item nav-link" to="/">Početna</Link>
+                        
                         <Link className="nav-item nav-link" to="/contact">Kontakt</Link>
 
                         <Link className="nav-item nav-link" to="/auth/user/login">Prijavi se</Link>

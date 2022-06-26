@@ -25,7 +25,7 @@ function Application() {
        <BrowserRouter>
           <Menu /> 
           <Routes>
-            <Route path="/" element={ <div></div> }></Route>
+            <Route path="/" element={ <UserLoginPage /> }></Route>
             <Route path="/contact" element={ <ContactPage /> }></Route>
 
             <Route path="/auth/user/login" element={ <UserLoginPage /> }></Route>
