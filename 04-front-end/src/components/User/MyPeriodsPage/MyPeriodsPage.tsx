@@ -21,9 +21,21 @@ export default function MyPeriodsPage() {
                 setErrorMessage(error?.message ?? "Unknown error occured while loading periods.")
             });
             
-        }, [periods]);    
-         
+        }, [periods]);
         
+        
+         
+    function doCancelReservation(periodId: number){
+        api("put", "/api/period/" + periodId + "/cancel", "user", {
+            userId: 2,  // treba ulogovanog korisnika
+        })
+        .then(res => {
+            if (res.status === 'error') {
+                return setErrorMessage(res.data + "");
+            }
+            //alert("Termin otkazan");
+        });
+    }
         
     return (
         
@@ -35,19 +47,25 @@ export default function MyPeriodsPage() {
                     <tr>
                         <th>Datum</th>
                         <th>Vreme</th>
-                        <th>Otkaži</th>
+                        <th>Status</th>
+                        <th>Opcije</th>
                     </tr>
                 </thead>
                 <tbody>
                 {periods.map(period => (
                        
                         <tr key={"period-" + period.period.periodId}>
-                            <td>{new Date(period.period.period).toLocaleDateString()}</td>
-                            <td>{new Date(period.period.period).toLocaleTimeString()}</td>
+                            <td>{new Date(period.period.period).toLocaleDateString('en-US', {timeZone: 'Europe/London'})}</td>
+                            <td>{new Date(period.period.period).toLocaleTimeString('en-US', {timeZone: 'Europe/London'})}</td>
                             <td>
                                 { period.isCanceled && <span>Otkazan</span> }
-                                { !period.isCanceled &&
-                                <button className="btn btn-danger btn-sm">Otkaži</button>}
+                                { (new Date(period.period.period) < new Date(Date.now()) && !period.isCanceled) && <span>Završen</span> }
+                                { (new Date(period.period.period) > new Date(Date.now()) && !period.isCanceled) && <span>Aktivan</span> }
+                            </td>
+                            <td>
+                                { (!period.isCanceled && (new Date(period.period.period) > new Date(Date.now()))) &&
+                                    <button className="btn btn-danger btn-sm" onClick={() => doCancelReservation(period.period.periodId)}>Otkaži</button>
+                                }
                             </td>
                         </tr>
                     )) }

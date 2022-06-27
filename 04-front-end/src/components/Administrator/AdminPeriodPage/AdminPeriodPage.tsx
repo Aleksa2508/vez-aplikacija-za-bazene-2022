@@ -32,7 +32,19 @@ export default function AdminPeriodPage(props: IAdminPeriodPageProperties){
         .catch(error => {
             setErrorMessage(error?.message ?? 'Unknown error while loading this period!');
         })
-    }, [ periodId ]);
+    }, [ periodId, period ]);
+
+    function doCancelReservation(periodId: number, userId: number){
+        api("put", "/api/period/" + periodId + "/cancel", "administrator", {
+            userId: userId,  
+        })
+        .then(res => {
+            if (res.status === 'error') {
+                return setErrorMessage(res.data + "");
+            }
+            //alert("Termin otkazan");
+        });
+    }
 
     return (
         <div>
@@ -47,6 +59,7 @@ export default function AdminPeriodPage(props: IAdminPeriodPageProperties){
                             <th>Email</th>
                             <th>Puno ime</th>
                             <th>Status</th>
+                            <th>Opcije</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -56,11 +69,20 @@ export default function AdminPeriodPage(props: IAdminPeriodPageProperties){
                                 <td>{user.user.email}</td>
                                 <td>{user.user.firstName + " " + user.user.lastName}</td>
                                 <td>
-                                    {!user.isCanceled &&
-                                        <button className="btn btn-sm btn-danger">Otkaži</button>
+                                    
+                                    {(!user.isCanceled && new Date(period.period) < new Date(Date.now())) &&
+                                       <span>Završen</span>
+                                    }
+                                    {(!user.isCanceled && new Date(period.period) > new Date(Date.now())) &&
+                                       <span>Aktivan</span>
                                     }
                                     {user.isCanceled &&
                                        <span>Otkazan</span>
+                                    }
+                                </td>
+                                <td>
+                                    {(!user.isCanceled && new Date(period.period) > new Date(Date.now())) &&
+                                        <button className="btn btn-sm btn-danger" onClick={() => doCancelReservation(period.periodId, user.user.userId)}>Otkaži</button>
                                     }
                                 </td>
                             </tr>
