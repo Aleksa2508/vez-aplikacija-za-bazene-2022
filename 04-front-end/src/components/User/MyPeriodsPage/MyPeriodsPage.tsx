@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from '../../../api/api';
 import { IUserPeriod } from "../../../models/IUser.model";
+import AuthStore from "../../../stores/AuthStore";
 
 
 
@@ -11,7 +12,7 @@ export default function MyPeriodsPage() {
 
     useEffect(() => {
 
-        api("get", "/api/user/2", "user")
+        api("get", "/api/user/" + AuthStore.getState().id, "user")
             .then(apiResponse => {
                 if(apiResponse.status === "ok"){
                     return setPeriods(apiResponse.data?.periods);
@@ -27,13 +28,13 @@ export default function MyPeriodsPage() {
          
     function doCancelReservation(periodId: number){
         api("put", "/api/period/" + periodId + "/cancel", "user", {
-            userId: 2,  // treba ulogovanog korisnika
+            userId: AuthStore.getState().id,  
         })
         .then(res => {
             if (res.status === 'error') {
                 return setErrorMessage(res.data + "");
             }
-            //alert("Termin otkazan");
+            
         });
     }
         

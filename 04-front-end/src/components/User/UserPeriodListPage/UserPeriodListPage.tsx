@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import IPeriod from "../../../models/IPeriod.model";
 import { api } from '../../../api/api';
-import { spawn } from "child_process";
+import AuthStore from "../../../stores/AuthStore";
+
 
 
 export default function UserPeriodListPage() {
@@ -22,11 +23,11 @@ export default function UserPeriodListPage() {
             });
 
    
-        }, []);       
+        }, [periods]);       
 
         function doMakeAReservation(periodId: number) {
             api("post", "/api/period/" + periodId, "user", {
-                userId: 2,  // treba napraviti rezervaciju za ulogovanog korisnika
+                userId: AuthStore.getState().id,  // treba napraviti rezervaciju za ulogovanog korisnika
             })
             .then(res => {
                 if (res.status === 'error') {
@@ -35,6 +36,18 @@ export default function UserPeriodListPage() {
                 alert("Termin rezervisan");
                 // redirect do MyPeriods
             });
+        }
+        function isUserAlreadyInAPeriod(periodId: number): boolean{
+            let booleanToReturn: boolean = false;
+            const period: IPeriod = periods.find(period => period.periodId === periodId) as IPeriod;
+            if(period.users !== undefined) {
+                for(let user of period.users){
+                    if(user.user.userId === AuthStore.getState().id) {
+                        return booleanToReturn = true;
+                    }
+                }
+            }
+            return booleanToReturn;
         }
     return (
         
@@ -57,11 +70,14 @@ export default function UserPeriodListPage() {
                             <td>{new Date(period.period).toLocaleTimeString('en-US', {timeZone: 'Europe/London'})}</td>
                             <td>{period.emptySpots}</td>
                             <td>
-                                {period.emptySpots > 0 &&
+                                {(period.emptySpots > 0 && !isUserAlreadyInAPeriod(period.periodId)) &&
                                     <button className="btn btn-primary btn-sm" onClick={() => doMakeAReservation(period.periodId)}>Rezerviši</button>  // Dugme treba da se sakrije ukoliko je korisnik vec rezervisao termin
                                 }
                                 {period.emptySpots <= 0 &&
                                     <span>Termin je pun.</span>  
+                                }
+                                {isUserAlreadyInAPeriod(period.periodId) &&
+                                    <span>Termin je rezervisan.</span>
                                 }
                                 
                             </td>
