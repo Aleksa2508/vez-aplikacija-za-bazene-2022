@@ -109,6 +109,15 @@ export default class AuthController extends BaseController {
                 return result;
             })
             .then(result => {
+                if (!result.isActive) {
+                    throw {
+                        status: 404,
+                        message: "Account hasn't been activated yet!"
+                    }
+                }
+                return result;
+            })
+            .then(result => {
                 const tokenData: ITokenData = {
                     role: "user",
                     id: result.userId,

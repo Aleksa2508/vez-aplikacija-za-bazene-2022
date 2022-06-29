@@ -18,6 +18,7 @@ import Menu from '../Menu/Menu';
 import AdminPeriodPage from '../Administrator/AdminPeriodPage/AdminPeriodPage';
 import { Provider } from 'react-redux';
 import AuthStore from '../../stores/AuthStore';
+import AdminListPage from '../Administrator/AdminListPage/AdminListPage';
 
 function Application() {
   return (
@@ -41,6 +42,7 @@ function Application() {
 
               <Route path="/auth/admin/login" element={ <AdminLoginPage /> }></Route>
               <Route path="/admin/dashboard" element={ <AdminDashboardPage /> }></Route>
+              <Route path="/admin/admin-list" element={ <AdminListPage /> }></Route>
               <Route path="/admin/periods" element={ <AdminPeriodListPage /> }></Route>
               <Route path="/admin/users" element={ <UserListPage /> }></Route>
               <Route path="/admin/edit-contact" element={ <AdminEditContactPage /> }></Route>

@@ -73,6 +73,7 @@ class UserController extends BaseController {
                 return user;
             })
             .then(user => {
+                user.activationCode = null;
                 res.send(user);
             })
             .catch(async error => {

@@ -59,7 +59,10 @@ export default function AdminPeriodListPage() {
                             <td>{period.periodId}</td>
                             <td>{new Date(period.period).toLocaleDateString('en-US', {timeZone: 'Europe/London'})}</td>
                             <td>{new Date(period.period).toLocaleTimeString('en-US', {timeZone: 'Europe/London'})}</td>
-                            <td>{period.emptySpots}</td>
+                            <td>
+                                {(new Date(period.period) < new Date(Date.now())) && <span>Termin je završen.</span>}
+                                {(new Date(period.period) > new Date(Date.now())) && period.emptySpots}
+                            </td>
                             <td>
                                 <Link className="btn btn-primary btn-sm" to={"/admin/period/" + period.periodId}>Pogledaj rezervacije</Link>
                             </td>

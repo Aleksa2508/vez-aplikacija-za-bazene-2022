@@ -20,13 +20,13 @@ let initialAuthStoreData: IAuthStoreData = DefaultAuthStoreData;
 
 (() => {
     if(!localStorage.getItem("app-auth-store-data")) {
-        return;
+        return {};
     }
 
     const storedData = JSON.parse(localStorage.getItem("app-auth-store-data") ?? "{}");
 
     if(typeof storedData !== "object") {
-        return;
+        return {};
     }
     initialAuthStoreData = {...initialAuthStoreData, ...storedData};
 })();
@@ -38,11 +38,11 @@ type TReset = {type: "reset"};
 
 type TAuthStoreAction = TUpdateRole | TUpdateId | TUpdateStrings | TReset;
 
-function AuthStoreReducer(oldState: IAuthStoreData = initialAuthStoreData, action: TAuthStoreAction){
+function AuthStoreReducer(state: IAuthStoreData = initialAuthStoreData, action: TAuthStoreAction){
     switch(action.type) {
-        case "update": return {...oldState, [action.key]: action.value};
+        case "update": return {...state, [action.key]: action.value};
         case "reset": return {...DefaultAuthStoreData}
-        default: return {...oldState};
+        default: return {...state} as IAuthStoreData;
     }
 }
 

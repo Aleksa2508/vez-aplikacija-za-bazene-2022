@@ -1,14 +1,32 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { api } from '../../../api/api';
 export default function UserRegisterPage() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [firstName, setFirstName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
     const [phoneNumber, setPhoneNumber] = useState<string>("");
-
+    const [errorMessage, setErrorMessage] = useState<string>("");
+    const navigate = useNavigate();
     const doRegister = () => {
-        console.log("Registracija...", email, password, firstName, lastName, phoneNumber);
+        api("post", "/api/user/register", "user", {email, password, firstName, lastName, phoneNumber})
+            .then(res => {
+                if(res.status !== "ok") {
+                    throw new Error("Neuspela registracija. Razlog: " + JSON.stringify(res.data));
+                }
+                return res.data;
+            })
+            .then(data => {
+                navigate("/auth/user/login", {replace: true});
+            })
+            .catch(error => {
+                setErrorMessage(error?.message ?? "Neuspela registracija!");
+
+                setTimeout(() => {
+                    setErrorMessage("");
+                }, 3500);
+            });
     }
     
     return (
@@ -18,7 +36,7 @@ export default function UserRegisterPage() {
                 <div className="form-group mb-3">
                     <div className="input-group">
                         <span className="input-group-text">Email</span>
-                        <input className="form-control" type="text" placeholder="Unesite vaš email" value={email} onChange={e => setEmail(e.currentTarget.value)}/>
+                        <input className="form-control" type="email" placeholder="Unesite vaš email" value={email} onChange={e => setEmail(e.currentTarget.value)}/>
                     </div>
                 </div>
                 <div className="form-group mb-3">

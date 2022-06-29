@@ -39,7 +39,7 @@ export function api(
         })
         .then(res => handleApiResponse(res, resolve))
         .catch(err => handleApiError(err, resolve, {
-            method, path, role, data, attemptToRefreshToken: false,
+            method, path, role, data, attemptToRefreshToken,
         }));
     });
 }
