@@ -1,4 +1,6 @@
 import axios, { AxiosResponse } from "axios";
+import { resolve } from "path";
+import AuthStore from '../stores/AuthStore';
 
 export type TApiMethod = "get" | "post" | "put" | "delete";
 export type TApiRole = "user" | "administrator";
@@ -32,7 +34,7 @@ export function api(
             data: data ? JSON.stringify(data) : undefined,
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer " + "Token kasnije", 
+                "Authorization": "Bearer " + AuthStore.getState().authToken, 
             },
         })
         .then(res => handleApiResponse(res, resolve))
@@ -43,39 +45,42 @@ export function api(
 }
 
 function handleApiError(err: any, resolve: (value: IApiResponse | PromiseLike<IApiResponse>) => void, args: IApiArguments) {
-    if (err?.response?.status === 401 && args.attemptToRefreshToken) {
-        const refreshedToken = "Kasnije";
-        if (refreshedToken) {
-            api(args.method, args.path, args.role, args.data, args.attemptToRefreshToken)
-            .then(res => resolve(res))
-            .catch(() => {
-                resolve({
-                    status: "login",
-                    data: "Morate biti ulogovani"
-                });
+    if(err?.response?.status === 401 || err?.response?.status === 403){
+        if(args.attemptToRefreshToken){
+            refreshToken()
+            .then(token => {
+                if(!token){
+                    throw {
+                        status: "login",
+                        data: "Morate biti ulogovani"
+                    };
+                }
+                return token;
+            })
+            .then(token => {
+                AuthStore.dispatch({type: "update", key: "authToken", value: token});
+                return api(args.method, args.path, args.role, args.data, false);
+            })
+            .then(res => resolve(res))     
+            .catch(error => {
+                resolve(error);
             });
-        } 
-
+        }
+        else{
+            return resolve({
+                status: "login",
+                data: "Niste ulogovani"
+            });
+        }
+    }
+    else{
         return resolve({
-            status: "login",
-            data: "Morate biti ulogovani"
-        });
-
-        
-    } 
-    if(err?.response.status === 401 && !args.attemptToRefreshToken) {
-        return resolve({
-            status: "login",
-            data: "Niste ulogovani"
+            status: "error",
+            data: err?.response?.data
         });
     }
-
-    if(err?.response.status === 403) {
-        return resolve({
-            status: "login",
-            data: "Wrong role"
-        });
-    }
+    
+    
 }
 
 function handleApiResponse(res: AxiosResponse<any, any>, resolve: (value: IApiResponse | PromiseLike<IApiResponse>) => void) {
@@ -90,4 +95,39 @@ function handleApiResponse(res: AxiosResponse<any, any>, resolve: (value: IApiRe
         status: 'ok',
         data: res.data,
     });
+}
+
+function refreshToken(): Promise<string|null>{
+
+    return new Promise(resolve => {
+        const role = AuthStore.getState().role;
+    
+        if(role === "visitor"){
+            return resolve(null);
+        }
+
+        axios({
+            method: "post",
+            baseURL: "http://localhost:10000",
+            url: "api/auth/" + role + "/refresh",
+            headers: {
+                "Authorization": "Bearer " + AuthStore.getState().refreshToken, 
+            },
+        })
+        .then(res => refreshTokenResponseHandler(res, resolve))
+        .catch(() => {
+            resolve(null);
+        })
+    });
+    
+
+
+}
+
+function refreshTokenResponseHandler(res: AxiosResponse<any>, resolve: (value: string | Promise<string|null>|null) => void) {
+    if (res.status !== 200){
+        return resolve(null);
+    }
+
+    resolve(res.data?.authToken);
 }

@@ -51,14 +51,14 @@ const DevConfig: IConfig = {
             issuer: "PIiVT",
             tokens: {
                 auth: {
-                    duration: 60 * 60 * 24, // Za dev: 24h - inace treba par minuta
+                    duration: 60 * 5, 
                     keys: {
                         public: readFileSync("./.keystore/admin.auth.public", "ascii"),
                         private: readFileSync("./.keystore/admin.auth.private", "ascii"),
                     },
                 },
                 refresh: {
-                    duration: 60 * 60 * 24 * 60, // Za dev: 60 dana - inace treba oko mesec dana
+                    duration: 60 * 60 * 24 * 30, 
                     keys: {
                         public: readFileSync("./.keystore/admin.refresh.public", "ascii"),
                         private: readFileSync("./.keystore/admin.refresh.private", "ascii"),
@@ -71,14 +71,14 @@ const DevConfig: IConfig = {
             issuer: "PIiVT",
             tokens: {
                 auth: {
-                    duration: 60 * 60 * 24, // Za dev: 24h - inace treba par minuta
+                    duration: 60 * 5, 
                     keys: {
                         public: readFileSync("./.keystore/user.auth.public", "ascii"),
                         private: readFileSync("./.keystore/user.auth.private", "ascii"),
                     },
                 },
                 refresh: {
-                    duration: 60 * 60 * 24 * 60, // Za dev: 60 dana - inace treba oko mesec dana
+                    duration: 60 * 60 * 24 * 30, 
                     keys: {
                         public: readFileSync("./.keystore/user.refresh.public", "ascii"),
                         private: readFileSync("./.keystore/user.refresh.private", "ascii"),

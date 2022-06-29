@@ -41,17 +41,17 @@ export default function UserLoginPage() {
     return (
         <div className="row">
             <div className="column col-xs-12 col-md-6 offset-md-3">
-                <h1 className="h4 mt-3 mb-3">Prijavite se na vaš nalog</h1>
+                <h1 className="h4 mt-3 mb-3">Prijavite se na Vaš nalog</h1>
                 <div className="form-group mb-3">
                     <div className="input-group">
                         <span className="input-group-text">Email</span>
-                        <input className="form-control" type="text" placeholder="Unesite vaš email" value={email} onChange={e => setEmail(e.currentTarget.value)}/>
+                        <input className="form-control" type="text" placeholder="Unesite Vaš email" value={email} onChange={e => setEmail(e.currentTarget.value)}/>
                     </div>
                 </div>
                 <div className="form-group mb-3">
                     <div className="input-group">
                         <span className="input-group-text">Lozinka</span>
-                        <input className="form-control" type="password" placeholder="Unesite vašu lozinku" value={password} onChange={e => setPassword(e.currentTarget.value)}/>
+                        <input className="form-control" type="password" placeholder="Unesite Vašu lozinku" value={password} onChange={e => setPassword(e.currentTarget.value)}/>
                     </div>
                 </div>
                 <div className="form-group mb-3">

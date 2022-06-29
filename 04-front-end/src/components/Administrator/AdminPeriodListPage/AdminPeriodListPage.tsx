@@ -54,7 +54,7 @@ export default function AdminPeriodListPage() {
                     </tr>
                 </thead>
                 <tbody>
-                {periods.map(period => (
+                {periods.sort((p1, p2) => new Date(p1.period).getTime() - new Date(p2.period).getTime()).map(period => (
                         <tr key={"period-" + period.periodId}>
                             <td>{period.periodId}</td>
                             <td>{new Date(period.period).toLocaleDateString('en-US', {timeZone: 'Europe/London'})}</td>

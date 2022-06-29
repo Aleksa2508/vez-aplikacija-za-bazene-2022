@@ -3,6 +3,7 @@ import AuthStore from '../../stores/AuthStore';
 import { useState } from 'react';
 import MenuVisitor from "./MenuVisitor";
 import MenuUser from './MenuUser';
+import MenuAdmin from './MenuAdmin';
 
 export default function Menu() {
     
@@ -41,6 +42,7 @@ export default function Menu() {
         <>
             {role === "visitor" && <MenuVisitor />}
             {role === "user" && <MenuUser />}
+            {role === "administrator" && <MenuAdmin />}
         </>
     );
 }

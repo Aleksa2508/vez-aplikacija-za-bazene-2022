@@ -53,7 +53,7 @@ export default function MyPeriodsPage() {
                     </tr>
                 </thead>
                 <tbody>
-                {periods.map(period => (
+                {periods.sort((p1, p2) => new Date(p1.period.period).getTime() - new Date(p2.period.period).getTime()).map(period => (
                        
                         <tr key={"period-" + period.period.periodId}>
                             <td>{new Date(period.period.period).toLocaleDateString('en-US', {timeZone: 'Europe/London'})}</td>

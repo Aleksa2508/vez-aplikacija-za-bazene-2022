@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import IPeriod from "../../../models/IPeriod.model";
 import { api } from '../../../api/api';
 import AuthStore from "../../../stores/AuthStore";
+import { IUserPeriod } from "../../../models/IUser.model";
 
 
 
 export default function UserPeriodListPage() {
     
     const [periods, setPeriods] = useState<IPeriod[]>([]);
+    const [myPeriods, setMyPeriods] = useState<IUserPeriod[]>([]);
     const [errorMessage, setErrorMessage] = useState<string>("");
     
     useEffect(() => {
@@ -21,34 +23,43 @@ export default function UserPeriodListPage() {
             .catch(error => {
                 setErrorMessage(error?.message ?? "Unknown error occured while loading periods.")
             });
-
-   
-        }, [periods]);       
+        api("get", "/api/user/" + AuthStore.getState().id, "user")
+            .then(apiResponse => {
+                if(apiResponse.status === "ok"){
+                    return setMyPeriods(apiResponse.data?.periods);
+                }
+            })
+            .catch(error => {
+                setErrorMessage(error?.message ?? "Unknown error occured while loading periods.")
+            });
+            
+        }, [periods]);   
+       
 
         function doMakeAReservation(periodId: number) {
             api("post", "/api/period/" + periodId, "user", {
-                userId: AuthStore.getState().id,  // treba napraviti rezervaciju za ulogovanog korisnika
+                userId: AuthStore.getState().id,  
             })
             .then(res => {
                 if (res.status === 'error') {
                     return setErrorMessage(res.data + "");
                 }
-                alert("Termin rezervisan");
-                // redirect do MyPeriods
+                
             });
         }
+        
         function isUserAlreadyInAPeriod(periodId: number): boolean{
             let booleanToReturn: boolean = false;
-            const period: IPeriod = periods.find(period => period.periodId === periodId) as IPeriod;
-            if(period.users !== undefined) {
-                for(let user of period.users){
-                    if(user.user.userId === AuthStore.getState().id) {
+           
+                for(let period of myPeriods){
+                    if(period.period.periodId === periodId) {
                         return booleanToReturn = true;
                     }
                 }
-            }
+                
             return booleanToReturn;
         }
+
     return (
         
         <div>
@@ -64,14 +75,14 @@ export default function UserPeriodListPage() {
                     </tr>
                 </thead>
                 <tbody>
-                {periods.filter(period => new Date(period.period) > new Date(Date.now())).map(period => (
+                {periods.filter(period => new Date(period.period) > new Date(Date.now())).sort((p1, p2) => new Date(p1.period).getTime() - new Date(p2.period).getTime()).map(period => (
                         <tr key={"period-" + period.periodId}>
                             <td>{new Date(period.period).toLocaleDateString('en-US', {timeZone: 'Europe/London'})}</td>
                             <td>{new Date(period.period).toLocaleTimeString('en-US', {timeZone: 'Europe/London'})}</td>
                             <td>{period.emptySpots}</td>
                             <td>
                                 {(period.emptySpots > 0 && !isUserAlreadyInAPeriod(period.periodId)) &&
-                                    <button className="btn btn-primary btn-sm" onClick={() => doMakeAReservation(period.periodId)}>Rezerviši</button>  // Dugme treba da se sakrije ukoliko je korisnik vec rezervisao termin
+                                    <button className="btn btn-primary btn-sm" onClick={() => doMakeAReservation(period.periodId)}>Rezerviši</button>  
                                 }
                                 {period.emptySpots <= 0 &&
                                     <span>Termin je pun.</span>  
