@@ -9,6 +9,8 @@ import * as mysql2 from 'mysql2/promise';
 import AdministratorService from './components/administrator/AdministratorService.service';
 import PeriodService from './components/period/PeriodService.service';
 import UserService from './components/user/UserService.service';
+import ContactInfoService from "./components/contactInfo/ContactInfoService.service";
+import WebsiteContentService from './components/websiteContent/WebsiteContentService.service';
 
 async function main() {
     const config: IConfig = DevConfig;
@@ -34,12 +36,16 @@ async function main() {
             administrator: null,
             period: null,
             user: null,
+            contactInfo: null,
+            websiteContent: null
         }
     }
 
     applicationResources.services.administrator = new AdministratorService(applicationResources);
     applicationResources.services.period = new PeriodService(applicationResources);
     applicationResources.services.user = new UserService(applicationResources);
+    applicationResources.services.contactInfo = new ContactInfoService(applicationResources);
+    applicationResources.services.websiteContent = new WebsiteContentService(applicationResources);
 
     const app: express.Application = express();
     app.use(cors());

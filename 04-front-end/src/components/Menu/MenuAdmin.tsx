@@ -18,7 +18,6 @@ export default function MenuAdmin(){
                     <div className="navbar-nav">
                         <strong className='px-2'>Zdravo, {AuthStore.getState().identity}</strong>
                         <Link className="nav-item nav-link pt-0 pb-0" to="/admin/dashboard">Dashboard</Link>
-                        <Link className="nav-item nav-link pt-0 pb-0" to="/contact">Kontakt</Link>
                         
                         <div className="nav-item nav-link pt-0 pb-0" style={{cursor: "pointer"}} onClick={() => doAdminLogout()}>Odjavi se</div>
                     </div>

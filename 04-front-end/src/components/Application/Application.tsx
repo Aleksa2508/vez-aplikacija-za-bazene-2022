@@ -5,7 +5,6 @@ import UserLoginPage from '../User/UserLoginPage/UserLoginPage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import ContactPage from '../Pages/ContactPage/ContactPage';
 import MyPeriodsPage from '../User/MyPeriodsPage/MyPeriodsPage';
-import RulesAndGuidesPage from '../User/RulesAndGuidesPage/RulesAndGuidesPage';
 import UserPeriodListPage from '../User/UserPeriodListPage/UserPeriodListPage';
 import UserRegisterPage from '../User/UserRegisterPage/UserRegisterPage';
 import AdminLoginPage from '../Administrator/AdminLoginPage/AdminLoginPage';
@@ -19,6 +18,8 @@ import AdminPeriodPage from '../Administrator/AdminPeriodPage/AdminPeriodPage';
 import { Provider } from 'react-redux';
 import AuthStore from '../../stores/AuthStore';
 import AdminListPage from '../Administrator/AdminListPage/AdminListPage';
+import RulesAndGuidesPage from '../Pages/RulesAndGuidesPage/RulesAndGuidesPage';
+
 
 function Application() {
   return (

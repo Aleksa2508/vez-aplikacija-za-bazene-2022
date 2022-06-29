@@ -4,6 +4,8 @@ import UserRouter from './components/user/UserRouter.router';
 import PeriodRouter from './components/period/PeriodRouter.router';
 import { readFileSync } from 'fs';
 import AuthRouter from './components/auth/AuthRouter.router';
+import ContactInfoRouter from './components/contactInfo/ContactInfoRouter.router';
+import WebsiteContentRouter from './components/websiteContent/WebsiteContentRouter.router';
 
 const DevConfig: IConfig = {
     server: {
@@ -36,7 +38,9 @@ const DevConfig: IConfig = {
         new AdministratorRouter(),
         new UserRouter(),
         new PeriodRouter(),
-        new AuthRouter()
+        new AuthRouter(),
+        new ContactInfoRouter(),
+        new WebsiteContentRouter()
     ],
     mail: {
         host: "smtp.office365.com",
