@@ -77,7 +77,7 @@ export default function UserPeriodListPage() {
                 <tbody>
                 {periods.filter(period => new Date(period.period) > new Date(Date.now())).sort((p1, p2) => new Date(p1.period).getTime() - new Date(p2.period).getTime()).map(period => (
                         <tr key={"period-" + period.periodId}>
-                            <td>{new Date(period.period).toLocaleDateString('en-US', {timeZone: 'Europe/London'})}</td>
+                            <td>{new Date(period.period).toLocaleDateString('en-US', {timeZone: 'Europe/London'})}</td> 
                             <td>{new Date(period.period).toLocaleTimeString('en-US', {timeZone: 'Europe/London'})}</td>
                             <td>{period.emptySpots}</td>
                             <td>
